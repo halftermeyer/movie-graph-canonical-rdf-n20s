@@ -1,0 +1,10 @@
+# Bridge: snapshot records -> Wikidata properties. Same snapshot, other target.
+# Same pragmatic route as the schema.org bridge: a :Movie record is read as a film.
+
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix p:    <http://neo4j.example/movies/prop/> .
+@prefix wdt:  <http://www.wikidata.org/prop/direct/> .
+
+p:title rdfs:subPropertyOf wdt:P1476 .   # title
+p:title rdfs:subPropertyOf rdfs:label .  # Wikidata labels are rdfs:label
+p:name  rdfs:subPropertyOf rdfs:label .

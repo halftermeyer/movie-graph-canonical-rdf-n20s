@@ -1,0 +1,43 @@
+# A local slice of schema.org: only the terms this demo uses.
+# Namespace: https://schema.org/ (the https form, as schema.org now recommends).
+# schema.org states domains and ranges with schema:domainIncludes / schema:rangeIncludes,
+# which carry no RDFS entailment: nothing here makes the reasoner guess types.
+
+@prefix schema: <https://schema.org/> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+# ---- classes
+schema:Thing           a rdfs:Class ; rdfs:label "Thing" .
+schema:CreativeWork    a rdfs:Class ; rdfs:label "CreativeWork" ; rdfs:subClassOf schema:Thing .
+schema:Movie           a rdfs:Class ; rdfs:label "Movie" ; rdfs:subClassOf schema:CreativeWork .
+schema:Review          a rdfs:Class ; rdfs:label "Review" ; rdfs:subClassOf schema:CreativeWork .
+schema:Person          a rdfs:Class ; rdfs:label "Person" ; rdfs:subClassOf schema:Thing .
+schema:Intangible      a rdfs:Class ; rdfs:label "Intangible" ; rdfs:subClassOf schema:Thing .
+schema:Role            a rdfs:Class ; rdfs:label "Role" ; rdfs:subClassOf schema:Intangible .
+schema:PerformanceRole a rdfs:Class ; rdfs:label "PerformanceRole" ; rdfs:subClassOf schema:Role .
+schema:Rating          a rdfs:Class ; rdfs:label "Rating" ; rdfs:subClassOf schema:Intangible .
+schema:AggregateRating a rdfs:Class ; rdfs:label "AggregateRating" ; rdfs:subClassOf schema:Rating .
+
+# ---- properties
+schema:name            a rdf:Property ; schema:domainIncludes schema:Thing ;        schema:rangeIncludes xsd:string .
+schema:description     a rdf:Property ; schema:domainIncludes schema:Thing ;        schema:rangeIncludes xsd:string .
+schema:datePublished   a rdf:Property ; schema:domainIncludes schema:CreativeWork ; schema:rangeIncludes xsd:gYear .
+schema:birthDate       a rdf:Property ; schema:domainIncludes schema:Person ;       schema:rangeIncludes xsd:gYear .
+schema:director        a rdf:Property ; schema:domainIncludes schema:Movie ;        schema:rangeIncludes schema:Person .
+schema:author          a rdf:Property ; schema:domainIncludes schema:CreativeWork ; schema:rangeIncludes schema:Person .
+schema:producer        a rdf:Property ; schema:domainIncludes schema:CreativeWork ; schema:rangeIncludes schema:Person .
+schema:actor           a rdf:Property ; schema:domainIncludes schema:Movie, schema:PerformanceRole ;
+                                        schema:rangeIncludes schema:Person, schema:PerformanceRole ;
+                       rdfs:comment "On a Movie, points to a PerformanceRole; on the PerformanceRole, points to the Person (the schema.org Role pattern)." .
+schema:characterName   a rdf:Property ; schema:domainIncludes schema:PerformanceRole ; schema:rangeIncludes xsd:string .
+schema:follows         a rdf:Property ; schema:domainIncludes schema:Person ;       schema:rangeIncludes schema:Person .
+schema:itemReviewed    a rdf:Property ; schema:domainIncludes schema:Review ;       schema:rangeIncludes schema:Thing .
+schema:reviewBody      a rdf:Property ; schema:domainIncludes schema:Review ;       schema:rangeIncludes xsd:string .
+schema:reviewRating    a rdf:Property ; schema:domainIncludes schema:Review ;       schema:rangeIncludes schema:Rating .
+schema:ratingValue     a rdf:Property ; schema:domainIncludes schema:Rating ;       schema:rangeIncludes xsd:decimal .
+schema:bestRating      a rdf:Property ; schema:domainIncludes schema:Rating .
+schema:worstRating     a rdf:Property ; schema:domainIncludes schema:Rating .
+schema:ratingCount     a rdf:Property ; schema:domainIncludes schema:AggregateRating ; schema:rangeIncludes xsd:integer .
+schema:aggregateRating a rdf:Property ; schema:domainIncludes schema:CreativeWork ; schema:rangeIncludes schema:AggregateRating .

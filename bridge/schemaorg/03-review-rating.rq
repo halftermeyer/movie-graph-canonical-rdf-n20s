@@ -1,0 +1,17 @@
+# REVIEWED.rating (0-100) becomes a schema:Rating, minted next to the review record.
+PREFIX lpg:    <https://example.org/lpg#>
+PREFIX t:      <http://neo4j.example/movies/type/>
+PREFIX p:      <http://neo4j.example/movies/prop/>
+PREFIX schema: <https://schema.org/>
+
+CONSTRUCT {
+  ?r schema:reviewRating ?rating .
+  ?rating a schema:Rating ;
+      schema:ratingValue ?value ;
+      schema:bestRating 100 ;
+      schema:worstRating 0 .
+}
+WHERE {
+  ?r lpg:type t:REVIEWED ; p:rating ?value .
+  BIND (IRI(CONCAT(STR(?r), "/rating")) AS ?rating)
+}

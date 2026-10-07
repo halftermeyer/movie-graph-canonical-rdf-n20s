@@ -1,0 +1,19 @@
+# The Bacon ladder, executable: one Jena rule per rung (the fallback for the
+# OWL someValuesFrom axioms of bacon-ladder.owl.ttl).
+# "within k" is a bound: every rung also contains the rung below.
+# Nothing here computes a distance. The tightest bound is read afterwards.
+
+@prefix p:  <http://neo4j.example/movies/prop/> .
+@prefix ex: <http://neo4j.example/movie-ext#> .
+
+[within0: (?x p:name "Kevin Bacon") -> (?x rdf:type ex:BaconWithin0)]
+[within1: (?x ex:coStar ?y) (?y rdf:type ex:BaconWithin0) -> (?x rdf:type ex:BaconWithin1)]
+[within2: (?x ex:coStar ?y) (?y rdf:type ex:BaconWithin1) -> (?x rdf:type ex:BaconWithin2)]
+[within3: (?x ex:coStar ?y) (?y rdf:type ex:BaconWithin2) -> (?x rdf:type ex:BaconWithin3)]
+[within4: (?x ex:coStar ?y) (?y rdf:type ex:BaconWithin3) -> (?x rdf:type ex:BaconWithin4)]
+[within5: (?x ex:coStar ?y) (?y rdf:type ex:BaconWithin4) -> (?x rdf:type ex:BaconWithin5)]
+[within6: (?x ex:coStar ?y) (?y rdf:type ex:BaconWithin5) -> (?x rdf:type ex:BaconWithin6)]
+
+# Each rung contains the one below: movie-ext.ttl says it with rdfs:subClassOf,
+# this rule applies it (RDFS rule rdfs9, restated so the rules see it).
+[subClass: (?x rdf:type ?a) (?a rdfs:subClassOf ?b) -> (?x rdf:type ?b)]

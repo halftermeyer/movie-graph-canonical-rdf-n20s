@@ -1,0 +1,31 @@
+# Bridge: snapshot records -> schema.org, the part plain RDFS can say.
+#
+# Pragmatic route: a record labelled :Movie is read as a movie. The snapshot
+# spec keeps "record != thing" (SPEC §1); a lifting step would mint separate
+# IRIs for the things. Here the record IRI stands for the thing.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix lpg:    <https://example.org/lpg#> .
+@prefix l:      <http://neo4j.example/movies/label/> .
+@prefix t:      <http://neo4j.example/movies/type/> .
+@prefix p:      <http://neo4j.example/movies/prop/> .
+@prefix schema: <https://schema.org/> .
+
+# Labels and relationship types act as classes (SPEC §9.1, RDFS fallback, rule rdfs7).
+lpg:label rdfs:subPropertyOf rdf:type .
+lpg:type  rdfs:subPropertyOf rdf:type .
+
+l:Movie  rdfs:subClassOf schema:Movie .
+l:Person rdfs:subClassOf schema:Person .
+
+# Relationships are resources: the ACTED_IN record IS the PerformanceRole,
+# the REVIEWED record IS the Review.
+t:ACTED_IN rdfs:subClassOf schema:PerformanceRole .
+t:REVIEWED rdfs:subClassOf schema:Review .
+
+# Property keys that already mean a schema.org property.
+p:title   rdfs:subPropertyOf schema:name .
+p:name    rdfs:subPropertyOf schema:name .
+p:tagline rdfs:subPropertyOf schema:description .
+p:summary rdfs:subPropertyOf schema:reviewBody .

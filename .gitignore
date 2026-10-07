@@ -1,0 +1,6 @@
+.env
+app/node_modules/
+app/dist/
+.DS_Store
+.claude/settings.local.json
+.vscode/

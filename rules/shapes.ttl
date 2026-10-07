@@ -1,0 +1,46 @@
+# What a schema.org consumer (a search engine, a catalogue) expects.
+# Checked on the bridged graph, after reasoning.
+
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <https://schema.org/> .
+@prefix ex:     <http://neo4j.example/movie-ext#> .
+
+ex:MovieShape a sh:NodeShape ;
+    sh:targetClass schema:Movie ;
+    sh:property [ sh:path schema:name ; sh:minCount 1 ; sh:datatype xsd:string ;
+                  sh:message "A movie needs a name." ] ;
+    sh:property [ sh:path schema:datePublished ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:gYear ;
+                  sh:message "A movie needs exactly one publication year (xsd:gYear)." ] ;
+    sh:property [ sh:path schema:director ; sh:minCount 1 ; sh:class schema:Person ;
+                  sh:message "A movie needs a director who is a schema:Person." ] ;
+    sh:property [ sh:path schema:actor ; sh:class schema:PerformanceRole ;
+                  sh:message "schema:actor on a movie must point to a PerformanceRole." ] .
+
+ex:PersonShape a sh:NodeShape ;
+    sh:targetClass schema:Person ;
+    sh:property [ sh:path schema:name ; sh:minCount 1 ; sh:datatype xsd:string ;
+                  sh:message "A person needs a name." ] ;
+    sh:property [ sh:path schema:birthDate ; sh:minCount 1 ; sh:datatype xsd:gYear ;
+                  sh:severity sh:Warning ;
+                  sh:message "Birth year missing: allowed, but consumers like it." ] .
+
+ex:PerformanceRoleShape a sh:NodeShape ;
+    sh:targetClass schema:PerformanceRole ;
+    sh:property [ sh:path schema:actor ; sh:minCount 1 ; sh:maxCount 1 ; sh:class schema:Person ;
+                  sh:message "A PerformanceRole has exactly one actor, a schema:Person." ] ;
+    sh:property [ sh:path schema:characterName ; sh:minCount 1 ; sh:datatype xsd:string ;
+                  sh:message "A PerformanceRole needs at least one character name." ] .
+
+ex:ReviewShape a sh:NodeShape ;
+    sh:targetClass schema:Review ;
+    sh:property [ sh:path schema:itemReviewed ; sh:minCount 1 ; sh:class schema:Movie ;
+                  sh:message "A review must review a movie." ] ;
+    sh:property [ sh:path schema:reviewRating ; sh:minCount 1 ; sh:class schema:Rating ;
+                  sh:message "A review needs a rating." ] .
+
+ex:RatingShape a sh:NodeShape ;
+    sh:targetClass schema:Rating ;
+    sh:property [ sh:path schema:ratingValue ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:minInclusive 0 ; sh:maxInclusive 100 ;
+                  sh:message "A rating value is between 0 and 100." ] .

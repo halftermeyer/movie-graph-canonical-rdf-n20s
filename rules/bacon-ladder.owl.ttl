@@ -1,0 +1,21 @@
+# The Bacon ladder, as stated: OWL definitions.
+#   BaconWithin0     = the record named "Kevin Bacon"
+#   BaconWithin(k+1) ⊇ BaconWithin(k)                    (in movie-ext.ttl)
+#   BaconWithin(k+1) ⊇ ∃ coStar . BaconWithin(k)
+# This is the definition. Which reasoner profile fires it is tested live in
+# the app; rules/bacon-ladder.rules is the executable fallback.
+
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix p:    <http://neo4j.example/movies/prop/> .
+@prefix ex:   <http://neo4j.example/movie-ext#> .
+
+ex:BaconWithin0 owl:equivalentClass
+    [ a owl:Restriction ; owl:onProperty p:name ; owl:hasValue "Kevin Bacon" ] .
+
+[ a owl:Restriction ; owl:onProperty ex:coStar ; owl:someValuesFrom ex:BaconWithin0 ] rdfs:subClassOf ex:BaconWithin1 .
+[ a owl:Restriction ; owl:onProperty ex:coStar ; owl:someValuesFrom ex:BaconWithin1 ] rdfs:subClassOf ex:BaconWithin2 .
+[ a owl:Restriction ; owl:onProperty ex:coStar ; owl:someValuesFrom ex:BaconWithin2 ] rdfs:subClassOf ex:BaconWithin3 .
+[ a owl:Restriction ; owl:onProperty ex:coStar ; owl:someValuesFrom ex:BaconWithin3 ] rdfs:subClassOf ex:BaconWithin4 .
+[ a owl:Restriction ; owl:onProperty ex:coStar ; owl:someValuesFrom ex:BaconWithin4 ] rdfs:subClassOf ex:BaconWithin5 .
+[ a owl:Restriction ; owl:onProperty ex:coStar ; owl:someValuesFrom ex:BaconWithin5 ] rdfs:subClassOf ex:BaconWithin6 .

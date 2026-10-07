@@ -1,0 +1,22 @@
+# Aggregate rating of a movie from its schema:Review records.
+# Needs the schema.org bridge. An aggregate is a CONSTRUCT, not a rule:
+# Jena rules have no aggregation.
+PREFIX schema: <https://schema.org/>
+
+CONSTRUCT {
+  ?movie schema:aggregateRating ?agg .
+  ?agg a schema:AggregateRating ;
+      schema:ratingValue ?avg ;
+      schema:ratingCount ?count ;
+      schema:bestRating 100 ;
+      schema:worstRating 0 .
+}
+WHERE {
+  { SELECT ?movie (AVG(?value) AS ?avg) (COUNT(?review) AS ?count)
+    WHERE {
+      ?review schema:itemReviewed ?movie ;
+              schema:reviewRating/schema:ratingValue ?value .
+    }
+    GROUP BY ?movie }
+  BIND (IRI(CONCAT(STR(?movie), "/aggregateRating")) AS ?agg)
+}

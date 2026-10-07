@@ -1,0 +1,13 @@
+# Character names become P4633 (name of the character role) qualifiers
+# on the P161 statement, i.e. on the ACTED_IN record.
+PREFIX lpg: <https://example.org/lpg#>
+PREFIX t:   <http://neo4j.example/movies/type/>
+PREFIX p:   <http://neo4j.example/movies/prop/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX pq:  <http://www.wikidata.org/prop/qualifier/>
+
+CONSTRUCT { ?r pq:P4633 ?character }
+WHERE {
+  ?r lpg:type t:ACTED_IN ;
+     p:roles/rdf:rest*/rdf:first ?character .
+}

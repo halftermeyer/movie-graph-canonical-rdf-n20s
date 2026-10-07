@@ -1,0 +1,29 @@
+# Bridge to Wikidata: classification and relationships.
+# Wikidata classifies with P31 (instance of), not rdf:type.
+
+@prefix lpg: <https://example.org/lpg#> .
+@prefix l:   <http://neo4j.example/movies/label/> .
+@prefix t:   <http://neo4j.example/movies/type/> .
+@prefix wd:  <http://www.wikidata.org/entity/> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix wp:  <http://www.wikidata.org/prop/> .
+@prefix ps:  <http://www.wikidata.org/prop/statement/> .
+
+# instance of: film
+[film:  (?m lpg:label l:Movie)  -> (?m wdt:P31 wd:Q11424)]
+# instance of: human
+[human: (?q lpg:label l:Person) -> (?q wdt:P31 wd:Q5)]
+
+# director
+[director:    (?r lpg:type t:DIRECTED) (?r lpg:source ?p) (?r lpg:target ?m) -> (?m wdt:P57 ?p)]
+# screenwriter
+[screenwriter:(?r lpg:type t:WROTE)    (?r lpg:source ?p) (?r lpg:target ?m) -> (?m wdt:P58 ?p)]
+# producer
+[producer:    (?r lpg:type t:PRODUCED) (?r lpg:source ?p) (?r lpg:target ?m) -> (?m wdt:P162 ?p)]
+
+# P161 cast member: the direct claim, and the full statement. The ACTED_IN
+# record IS the Wikidata statement node, so it can carry qualifiers.
+[cast: (?r lpg:type t:ACTED_IN) (?r lpg:source ?p) (?r lpg:target ?m)
+    -> (?m wdt:P161 ?p) (?m wp:P161 ?r) (?r ps:P161 ?p)]
+
+# REVIEWED and FOLLOWS have no Wikidata property: left out, by choice.

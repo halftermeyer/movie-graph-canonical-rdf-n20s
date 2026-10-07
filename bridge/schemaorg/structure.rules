@@ -1,0 +1,22 @@
+# Bridge: what RDFS cannot say. Jena rules, forward chaining.
+# Relationship records are read through lpg:source / lpg:target.
+
+@prefix lpg:    <https://example.org/lpg#> .
+@prefix t:      <http://neo4j.example/movies/type/> .
+@prefix schema: <https://schema.org/> .
+
+# DIRECTED / WROTE / PRODUCED point from the person to the movie;
+# schema.org points from the movie to the person: flip them.
+[director: (?r lpg:type t:DIRECTED) (?r lpg:source ?p) (?r lpg:target ?m) -> (?m schema:director ?p)]
+[author:   (?r lpg:type t:WROTE)    (?r lpg:source ?p) (?r lpg:target ?m) -> (?m schema:author ?p)]
+[producer: (?r lpg:type t:PRODUCED) (?r lpg:source ?p) (?r lpg:target ?m) -> (?m schema:producer ?p)]
+
+# The ACTED_IN record becomes the PerformanceRole between the movie and the actor.
+[performanceRole: (?r lpg:type t:ACTED_IN) (?r lpg:source ?p) (?r lpg:target ?m)
+               -> (?m schema:actor ?r) (?r schema:actor ?p)]
+
+# The REVIEWED record becomes the Review.
+[review: (?r lpg:type t:REVIEWED) (?r lpg:source ?p) (?r lpg:target ?m)
+      -> (?r schema:itemReviewed ?m) (?r schema:author ?p)]
+
+[follows: (?r lpg:type t:FOLLOWS) (?r lpg:source ?a) (?r lpg:target ?b) -> (?a schema:follows ?b)]

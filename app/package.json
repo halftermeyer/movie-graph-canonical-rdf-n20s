@@ -1,0 +1,33 @@
+{
+  "name": "movie-graph-canonical-rdf-n20s",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@google/genai": "^2.27.0",
+    "@neo4j-ndl/base": "^4.23.6",
+    "@neo4j-ndl/react": "^4.25.6",
+    "@tanstack/react-table": "^8.21.3",
+    "n3": "^2.13.9",
+    "neo4j-driver": "^6.2.0",
+    "rdf-isomorphic": "^2.0.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/n3": "^1.26.4",
+    "@types/node": "^26.6.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3"
+  }
+}

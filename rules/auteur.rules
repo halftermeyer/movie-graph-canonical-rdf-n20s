@@ -1,0 +1,10 @@
+# An auteur directed and wrote the same movie. Read on the records,
+# so it works with either bridge (or none).
+
+@prefix lpg: <https://example.org/lpg#> .
+@prefix t:   <http://neo4j.example/movies/type/> .
+@prefix ex:  <http://neo4j.example/movie-ext#> .
+
+[auteur: (?d lpg:type t:DIRECTED) (?d lpg:source ?p) (?d lpg:target ?m)
+         (?w lpg:type t:WROTE)    (?w lpg:source ?p) (?w lpg:target ?m)
+      -> (?p rdf:type ex:Auteur)]

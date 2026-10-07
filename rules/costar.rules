@@ -1,0 +1,12 @@
+# Two people are co-stars when two ACTED_IN records point to the same movie.
+# The proof of every ex:coStar triple goes through two relationship records,
+# so through two elementIds.
+
+@prefix lpg: <https://example.org/lpg#> .
+@prefix t:   <http://neo4j.example/movies/type/> .
+@prefix ex:  <http://neo4j.example/movie-ext#> .
+
+[coStar: (?r1 lpg:type t:ACTED_IN) (?r1 lpg:source ?a) (?r1 lpg:target ?m)
+         (?r2 lpg:type t:ACTED_IN) (?r2 lpg:target ?m) (?r2 lpg:source ?b)
+         notEqual(?a, ?b)
+      -> (?a ex:coStar ?b)]

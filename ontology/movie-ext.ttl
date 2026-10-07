@@ -1,0 +1,28 @@
+# A small extension next to schema.org, for what schema.org does not say.
+# The Bacon ladder classes are declared here; their definition (OWL) and the
+# rules that compute them live in rules/.
+
+@prefix ex:     <http://neo4j.example/movie-ext#> .
+@prefix schema: <https://schema.org/> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+
+ex:coStar a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:label "co-star" ;
+    rdfs:comment "Two people who acted in the same movie (derived from ACTED_IN records)." .
+
+ex:Auteur a owl:Class ;
+    rdfs:subClassOf schema:Person ;
+    rdfs:label "Auteur" ;
+    rdfs:comment "A person who directed and wrote the same movie." .
+
+# The Bacon ladder: BaconWithinN = "at most N co-star hops from Kevin Bacon".
+# Each rung contains the previous one: a bound, never an exact distance.
+ex:BaconWithin0 a owl:Class ; rdfs:label "Bacon within 0" ; rdfs:subClassOf ex:BaconWithin1 .
+ex:BaconWithin1 a owl:Class ; rdfs:label "Bacon within 1" ; rdfs:subClassOf ex:BaconWithin2 .
+ex:BaconWithin2 a owl:Class ; rdfs:label "Bacon within 2" ; rdfs:subClassOf ex:BaconWithin3 .
+ex:BaconWithin3 a owl:Class ; rdfs:label "Bacon within 3" ; rdfs:subClassOf ex:BaconWithin4 .
+ex:BaconWithin4 a owl:Class ; rdfs:label "Bacon within 4" ; rdfs:subClassOf ex:BaconWithin5 .
+ex:BaconWithin5 a owl:Class ; rdfs:label "Bacon within 5" ; rdfs:subClassOf ex:BaconWithin6 .
+ex:BaconWithin6 a owl:Class ; rdfs:label "Bacon within 6" ; rdfs:subClassOf schema:Person .

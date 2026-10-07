@@ -1,0 +1,18 @@
+# P577 publication date, P569 date of birth. Year precision only.
+PREFIX lpg: <https://example.org/lpg#>
+PREFIX l:   <http://neo4j.example/movies/label/>
+PREFIX p:   <http://neo4j.example/movies/prop/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+  ?m wdt:P577 ?published .
+  ?q wdt:P569 ?birth .
+}
+WHERE {
+  { ?m lpg:label l:Movie ; p:released ?released .
+    BIND (STRDT(STR(?released), xsd:gYear) AS ?published) }
+  UNION
+  { ?q lpg:label l:Person ; p:born ?born .
+    BIND (STRDT(STR(?born), xsd:gYear) AS ?birth) }
+}
