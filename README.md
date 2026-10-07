@@ -18,6 +18,35 @@ Each scenario opens with the business problem, then runs live: real queries, rea
 | ⚖ | **Parity benchmark** | One button runs export and projection on the same scope, shows timings and triple counts, and checks that the two graphs are isomorphic. |
 | 💬 | **Assistant** | Gemini, as a tool-calling loop over the typed query functions. Answers come from the graph and the reasoner, never from the LLM. |
 
+## Screenshots
+
+**Start.** The thesis, the data loaded from inside the app, and the four scenarios.
+![Start tab](docs/screenshots/1-start.png)
+
+**1 · One snapshot, two consumers.** The same scope goes to export and to projection, with the same counts. A relationship record is a resource with its own IRI.
+![Scenario 1](docs/screenshots/2-snapshot.png)
+
+`RETURN n`: only nodes are returned, so no relationship is in scope.
+![Scenario 1, RETURN n](docs/screenshots/2b-snapshot-return-n.png)
+
+**2 · The web speaks schema.org.** The bridge pipeline, SHACL, the JSON-LD block, a rich-result preview, and the ACTED_IN record seen as the PerformanceRole.
+![Scenario 2](docs/screenshots/3-schemaorg.png)
+
+**3 · Change the target, not the graph.** Database unchanged, snapshot fingerprint unchanged, output changed.
+![Scenario 3](docs/screenshots/4-wikidata.png)
+
+**4 · Six degrees, proven.** Cypher's exact numbers, the OWL profile test, RDF bounds that agree for all 102 people, and the `explain` proof as clickable records.
+![Scenario 4](docs/screenshots/5-bacon.png)
+
+**Layers.** Plain files, read-only.
+![Layers](docs/screenshots/6-layers.png)
+
+**Benchmark.** Export and projection, timed, then checked for isomorphism.
+![Benchmark](docs/screenshots/7-benchmark.png)
+
+**Assistant.** “Who is within 2 of Kevin Bacon, and why?”, answered from tool results.
+![Assistant](docs/screenshots/8-assistant.png)
+
 ## Prerequisites
 
 - **Neo4j Enterprise 2026.09+** with these plugins in `plugins/`:
