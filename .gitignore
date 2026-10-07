@@ -4,3 +4,8 @@ app/dist/
 .DS_Store
 .claude/settings.local.json
 .vscode/
+dist/
+video/raw/
+video/audio/
+video/scenes.json
+__pycache__/

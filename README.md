@@ -72,6 +72,24 @@ There is no seed script. Point the app at an empty database and click **Load the
 
 > ⚠️ Every `.env` key ends up in the browser bundle (Vite), including the Neo4j password and the Gemini key. **Local demo only.** `.env` is gitignored.
 
+## Demo video
+
+A narrated video (about 7.5 minutes) is generated from [`demo-script.md`](demo-script.md). The prose is the presenter's script. The fenced `scene` blocks drive the recorder: Playwright drives the running app, Gemini TTS reads the narration, and ffmpeg assembles the result. The mp4 is a build artifact (`dist/`, gitignored); the pipeline is the asset.
+
+```bash
+python3 -m pip install playwright google-genai pyyaml && python3 -m playwright install chromium   # once; needs ffmpeg
+make preview        # terminal 1: production build on :5190 (no dev-server reload can break the take)
+make video-silent   # rehearsal: every selector, no TTS credits
+make video          # narrated: dist/demo.mp4 + dist/demo.srt + dist/frames/contact_sheet.png, then the tests
+```
+
+- **Re-run after any UI change.** A broken selector aborts the take and names the failing scene.
+- **Narration is cached per scene:** only edited narration is re-synthesized.
+- **The recording mutates the database:** it clears it and reloads it on screen, which is why `make video` ends with `make test`.
+- **Review the contact sheet** (`dist/frames/contact_sheet.png`): the left column is what's on screen when the voice starts, the right column is mid-scene.
+- **Testids:** the recorder targets `data-testid` attributes, some of which only exist once a result is rendered (e.g. `shacl-result-ok`), so waits never rely on fixed delays.
+- **Gemini is called twice:** for TTS (`GEMINI_API_KEY` from `.env`) and live in the `assistant` scene.
+
 ## The three layers
 
 These are plain files. The app reads them as they are, shows them read-only (Layers tab, and inside each scenario), and sends them to n20s unchanged. To change a conclusion, edit a file. To add a target, add a folder under `bridge/`.

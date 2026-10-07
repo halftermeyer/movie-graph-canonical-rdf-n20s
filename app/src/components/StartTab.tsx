@@ -33,7 +33,7 @@ export default function StartTab({
 
   return (
     <div className="start">
-      <div className="thesis">
+      <div className="thesis" data-testid="thesis">
         <div className="thesis-col">
           <div className="thesis-step">Scope</div>
           <div className="thesis-tool">Cypher</div>
@@ -56,12 +56,12 @@ export default function StartTab({
       <div className="card">
         <h3 style={{ marginTop: 0 }}>Data</h3>
         {empty ? (
-          <p>
+          <p data-testid="db-empty">
             Database <code>{DATABASE}</code> is empty. The demo bootstraps from here: the button runs the{" "}
             <code>:play movies</code> script (<code>data/movies.cypher</code>) statement by statement.
           </p>
         ) : (
-          <p>
+          <p data-testid="db-loaded">
             Database <code>{DATABASE}</code>: <strong>{stats.movies}</strong> movies, <strong>{stats.people}</strong> people,{" "}
             {stats.relationships.map((r) => `${r.count} ${r.type}`).join(", ")}.
             {stats.n20sGraphs.length > 0 && (
@@ -73,11 +73,11 @@ export default function StartTab({
         )}
         <div className="button-group">
           {empty ? (
-            <FilledButton onClick={() => load.run()} isLoading={load.running}>
+            <FilledButton onClick={() => load.run()} isLoading={load.running} data-testid="load-movies">
               Load the Movie Graph
             </FilledButton>
           ) : (
-            <OutlinedButton onClick={() => clear.run()} isLoading={clear.running}>
+            <OutlinedButton onClick={() => clear.run()} isLoading={clear.running} data-testid="clear-db">
               Clear database (start from empty)
             </OutlinedButton>
           )}

@@ -119,6 +119,7 @@ export default function WikidataTab() {
           {(["schemaorg", "wikidata"] as BridgeTarget[]).map((t) => (
             <FilledButton
               key={t}
+              data-testid={`bridge-${t}`}
               onClick={() => {
                 setPending(t);
                 run.run(t);
@@ -133,7 +134,7 @@ export default function WikidataTab() {
         <ErrorBanner error={run.error} />
 
         {last && (
-          <div className="invariants">
+          <div className="invariants" data-testid={`invariants-${last.target}`}>
             <Invariant label="Database" ok={sameGraph(last.before, last.after)} value={`${num(last.after.nodes)} nodes · ${num(last.after.relationships)} relationships`} />
             <Invariant
               label="Snapshot"
@@ -144,7 +145,7 @@ export default function WikidataTab() {
           </div>
         )}
         {both && (
-          <Punchline>
+          <Punchline testid="fingerprint-punchline">
             Two targets, one snapshot: the fingerprints match (
             <code>{outputs.schemaorg!.after.fingerprint.slice(0, 12)}…</code> ={" "}
             <code>{outputs.wikidata!.after.fingerprint.slice(0, 12)}…</code>

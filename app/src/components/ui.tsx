@@ -57,7 +57,7 @@ export function ScenarioFrame({
 /** The business problem, stated visually before anything runs. */
 export function Problem({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="problem">
+    <div className="problem" data-testid="problem">
       <div className="problem-label">The problem</div>
       <div className="problem-title">{title}</div>
       <div className="problem-body">{children}</div>
@@ -75,13 +75,27 @@ export function Live({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-export function Punchline({ children }: { children: ReactNode }) {
-  return <div className="punchline">{children}</div>;
+export function Punchline({ children, testid }: { children: ReactNode; testid?: string }) {
+  return (
+    <div className="punchline" data-testid={testid}>
+      {children}
+    </div>
+  );
 }
 
-export function Stat({ value, label, tone }: { value: ReactNode; label: string; tone?: "good" | "bad" | "neutral" }) {
+export function Stat({
+  value,
+  label,
+  tone,
+  testid,
+}: {
+  value: ReactNode;
+  label: string;
+  tone?: "good" | "bad" | "neutral";
+  testid?: string;
+}) {
   return (
-    <div className={`scenario-stat ${tone ?? ""}`}>
+    <div className={`scenario-stat ${tone ?? ""}`} data-testid={testid}>
       <div className="stat-number">{value}</div>
       <div className="stat-label">{label}</div>
     </div>
@@ -102,14 +116,16 @@ export function CodeBlock({
   maxHeight = 360,
   language,
   actions,
+  testid,
 }: {
   code: string;
   maxHeight?: number;
   language?: string;
   actions?: ReactNode;
+  testid?: string;
 }) {
   return (
-    <div className="code-block">
+    <div className="code-block" data-testid={testid}>
       <div className="code-block-bar">
         <span className="code-lang">{language ?? ""}</span>
         <span style={{ display: "flex", gap: 6 }}>

@@ -7,6 +7,7 @@ interface ChatMessage {
   role: "user" | "assistant" | "tool";
   content: string;
   toolName?: string;
+  error?: boolean;
 }
 
 const SUGGESTIONS = [
@@ -26,8 +27,13 @@ export default function ChatTab() {
   const end = useRef<HTMLDivElement>(null);
   const apiKey = import.meta.env.GEMINI_API_KEY;
 
+  const lastQuestion = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    end.current?.scrollIntoView({ behavior: "smooth" });
+    // While working, follow the tool calls; once answered, bring the question back to the top
+    // so the question, the tool calls and the start of the answer read together.
+    const answered = messages.length > 0 && messages[messages.length - 1].role === "assistant";
+    if (answered) lastQuestion.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    else end.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const send = useCallback(
@@ -68,7 +74,7 @@ export default function ChatTab() {
         }
         setHistory(contents);
       } catch (e) {
-        setMessages((m) => [...m, { role: "assistant", content: `Error: ${(e as Error).message}` }]);
+        setMessages((m) => [...m, { role: "assistant", content: `Error: ${(e as Error).message}`, error: true }]);
       } finally {
         setLoading(false);
       }
@@ -89,7 +95,7 @@ export default function ChatTab() {
 
   return (
     <div className="chat-container">
-      <div className="chat-messages">
+      <div className="chat-messages" data-testid="chat-messages">
         {messages.length === 0 && (
           <div className="chat-welcome">
             <h3>Movie Graph assistant</h3>
@@ -100,14 +106,18 @@ export default function ChatTab() {
           </div>
         )}
         <div className="chat-suggestions">
-          {SUGGESTIONS.map((s) => (
-            <button key={s} className="chat-suggestion" onClick={() => send(s)} disabled={loading}>
+          {SUGGESTIONS.map((s, i) => (
+            <button key={s} className="chat-suggestion" data-testid={`chat-suggestion-${i}`} onClick={() => send(s)} disabled={loading}>
               {s}
             </button>
           ))}
         </div>
         {messages.map((msg, i) => (
-          <div key={i} className={`chat-message ${msg.role}`}>
+          <div
+            key={i}
+            className={`chat-message ${msg.role}`}
+            ref={msg.role === "user" && i === messages.findLastIndex((m) => m.role === "user") ? lastQuestion : undefined}
+          >
             {msg.role === "tool" ? (
               <div className="chat-tool-call">
                 <span className="chat-tool-icon">&#9881;</span>
@@ -115,7 +125,10 @@ export default function ChatTab() {
                 <span className="chat-tool-args">{msg.content}</span>
               </div>
             ) : (
-              <div className="chat-message-content">
+              <div
+                className="chat-message-content"
+                data-testid={msg.role === "assistant" ? (msg.error ? "chat-error" : "chat-answer") : undefined}
+              >
                 {msg.role === "assistant" ? <div dangerouslySetInnerHTML={{ __html: markdown(msg.content) }} /> : msg.content}
               </div>
             )}
@@ -133,6 +146,7 @@ export default function ChatTab() {
       <div className="chat-input-bar">
         <input
           type="text"
+          data-testid="chat-input"
           className="chat-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}

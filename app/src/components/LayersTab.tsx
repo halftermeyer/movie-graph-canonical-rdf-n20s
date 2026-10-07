@@ -34,7 +34,7 @@ export default function LayersTab() {
           n20s unchanged. To change what the demo concludes, edit a file and re-run a scenario; to target another vocabulary,
           add a folder under <code>bridge/</code>.
         </p>
-        <div className="layer-stack">
+        <div className="layer-stack" data-testid="layer-stack">
           <div className="layer-stack-item">snapshot (mechanical, from Cypher)</div>
           <div className="layer-stack-item">ontology/</div>
           <div className="layer-stack-item">bridge/&lt;target&gt;/</div>

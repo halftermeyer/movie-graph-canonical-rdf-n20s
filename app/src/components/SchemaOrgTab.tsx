@@ -28,9 +28,9 @@ export function PragmaticNote() {
   );
 }
 
-export function PipelineTable({ run }: { run: BridgeRun }) {
+export function PipelineTable({ run, testid }: { run: BridgeRun; testid?: string }) {
   return (
-    <table className="data-table pipeline">
+    <table className="data-table pipeline" data-testid={testid}>
       <thead>
         <tr>
           <th>Step</th>
@@ -115,20 +115,25 @@ export default function SchemaOrgTab() {
       <Live title="Bridge → SHACL → JSON-LD, from plain files">
         <PragmaticNote />
         <div className="button-group">
-          <FilledButton onClick={() => bridgeRun.run(breakIt)} isLoading={bridgeRun.running}>
+          <FilledButton onClick={() => bridgeRun.run(breakIt)} isLoading={bridgeRun.running} data-testid="apply-bridge">
             1 · Apply the schema.org bridge
           </FilledButton>
           <label className="checkbox">
-            <input type="checkbox" checked={breakIt} onChange={(e) => setBreakIt(e.target.checked)} /> Break it: skip{" "}
+            <input type="checkbox" data-testid="break-it" checked={breakIt} onChange={(e) => setBreakIt(e.target.checked)} /> Break it: skip{" "}
             <code>01-years.rq</code>
           </label>
         </div>
         <ErrorBanner error={bridgeRun.error} />
-        {bridgeRun.result && <PipelineTable run={bridgeRun.result} />}
+        {bridgeRun.result && (
+          <PipelineTable
+            run={bridgeRun.result}
+            testid={bridgeRun.result.steps.some((s) => s.step.includes("skipped")) ? "bridge-run-broken" : "bridge-run-full"}
+          />
+        )}
 
         {bridgeRun.result && (
           <div className="button-group">
-            <FilledButton onClick={() => validation.run()} isLoading={validation.running}>
+            <FilledButton onClick={() => validation.run()} isLoading={validation.running} data-testid="validate">
               2 · Validate with SHACL (rules/shapes.ttl)
             </FilledButton>
           </div>
@@ -136,7 +141,7 @@ export default function SchemaOrgTab() {
         <ErrorBanner error={validation.error} />
         {v && (
           <>
-            <div className="scenario-summary">
+            <div className="scenario-summary" data-testid={violations.length ? "shacl-result-broken" : "shacl-result-ok"}>
               <Stat value={violations.length} label="violations" tone={violations.length ? "bad" : "good"} />
               <Stat value={warnings.length} label="warnings" tone="neutral" />
             </div>
@@ -154,20 +159,21 @@ export default function SchemaOrgTab() {
 
         {bridgeRun.result && (
           <div className="button-group">
-            <select className="select" value={title} onChange={(e) => setTitle(e.target.value)}>
+            <select className="select" data-testid="movie-select" value={title} onChange={(e) => setTitle(e.target.value)}>
               {titles.map((t) => (
                 <option key={t}>{t}</option>
               ))}
             </select>
-            <FilledButton onClick={() => ld.run(title)} isLoading={ld.running}>
+            <FilledButton onClick={() => ld.run(title)} isLoading={ld.running} data-testid="gen-jsonld">
               3 · Generate the JSON-LD block
             </FilledButton>
           </div>
         )}
         <ErrorBanner error={ld.error} />
         {ld.result && (
-          <div className="jsonld-split">
+          <div className="jsonld-split" data-testid="jsonld-split">
             <CodeBlock
+              testid="jsonld-block"
               code={snippet}
               language="HTML · ready to embed"
               maxHeight={520}
@@ -182,7 +188,7 @@ export default function SchemaOrgTab() {
         )}
 
         {role && (
-          <div className="resource-callout">
+          <div className="resource-callout" data-testid="resource-callout">
             <div className="resource-callout-title">Why relationships are resources</div>
             <p>
               The PerformanceRole of <strong>{role.actor}</strong> has <code>"@id": "{shorten(role.iri, BASE)}"</code>. That is

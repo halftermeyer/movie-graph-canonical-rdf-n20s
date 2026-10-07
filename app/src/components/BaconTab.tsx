@@ -83,13 +83,13 @@ export default function BaconTab() {
       <Live title="Scope with the Movie Graph guide's Bacon query, derive with RDF, compare">
         <CodeBlock code={BACON_SCOPE} language="Cypher · the scope (shortestPath, up to 4 co-star hops)" maxHeight={140} />
         <div className="button-group">
-          <FilledButton onClick={() => cypher.run()} isLoading={cypher.running}>
+          <FilledButton onClick={() => cypher.run()} isLoading={cypher.running} data-testid="cypher-exact">
             1 · Cypher: exact Bacon numbers
           </FilledButton>
-          <FilledButton onClick={() => profiles.run()} isLoading={profiles.running}>
+          <FilledButton onClick={() => profiles.run()} isLoading={profiles.running} data-testid="profile-test">
             2 · Which profile fires the OWL ladder?
           </FilledButton>
-          <FilledButton onClick={() => ladder.run("rules")} isLoading={ladder.running}>
+          <FilledButton onClick={() => ladder.run("rules")} isLoading={ladder.running} data-testid="derive-ladder">
             3 · RDF: derive coStar + the ladder
           </FilledButton>
           {ladder.result && (
@@ -101,7 +101,7 @@ export default function BaconTab() {
         <ErrorBanner error={cypher.error ?? profiles.error ?? ladder.error} />
 
         {cypher.result && (
-          <div className="dist">
+          <div className="dist" data-testid="dist-chart">
             <div className="consumer-title">Closed world · Cypher shortestPath over the whole graph</div>
             <div className="dist-bars">
               {dist.map((n, k) => (
@@ -116,7 +116,7 @@ export default function BaconTab() {
         )}
 
         {profiles.result && (
-          <div className="profiles">
+          <div className="profiles" data-testid="profiles">
             <div className="consumer-title">rules/bacon-ladder.owl.ttl (∃ coStar . BaconWithin<sub>k</sub> ⊑ BaconWithin<sub>k+1</sub>) under each profile</div>
             <div className="profile-row">
               {profiles.result.map((p) => (
@@ -150,7 +150,7 @@ export default function BaconTab() {
 
         {table && (
           <>
-            <Punchline>
+            <Punchline testid="bacon-punchline">
               <span className="punch-big">RDF proves “within 2”. Only Cypher knows “exactly 2”.</span>
               <br />
               Open world: from the triples, the reasoner can derive that someone is <em>within</em> k, never that they are{" "}
@@ -158,9 +158,9 @@ export default function BaconTab() {
               tightest bound below is the smallest rung we find among the derived facts. Here it matches Cypher's exact number
               for <strong>{agree} of {table.length}</strong> people. That is a check we run, not something RDF computes.
             </Punchline>
-            <input className="filter-input" placeholder="Filter people…" value={filter} onChange={(e) => setFilter(e.target.value)} />
+            <input className="filter-input" data-testid="bacon-filter" placeholder="Filter people…" value={filter} onChange={(e) => setFilter(e.target.value)} />
             <div className="records-table-wrap tall">
-              <table className="data-table bacon-table">
+              <table className="data-table bacon-table" data-testid="bacon-table">
                 <thead>
                   <tr>
                     <th>Person</th>
@@ -185,7 +185,7 @@ export default function BaconTab() {
                         <td>{r.rdf === r.cypher ? "✓" : "✗"}</td>
                         <td>
                           {r.cypher > 0 && (
-                            <button className="audit-btn" onClick={() => explain.run(r)} disabled={explain.running}>
+                            <button className="audit-btn" data-testid={`prove-${slug(r.name)}`} onClick={() => explain.run(r)} disabled={explain.running}>
                               Prove “within {r.rdf ?? r.cypher}”
                             </button>
                           )}
@@ -200,16 +200,16 @@ export default function BaconTab() {
 
         <ErrorBanner error={explain.error} />
         {proof && proofFor && (
-          <div className="proof">
+          <div className="proof" data-testid="proof">
             <div className="consumer-title">
               n20s.graph.explain: {proofFor.name} is BaconWithin{proof.rung}, {proof.steps.length} derivation steps
             </div>
-            <div className="proof-path">
+            <div className="proof-path" data-testid="proof-path">
               {proof.hops.map((h, i) => (
                 <div key={i} className="proof-hop">
                   {i === 0 && <ProofChip kind="Person" label={label(h.from)} iri={h.from} focus={focus} onFocus={setFocus} />}
                   <ProofChip kind="rel" label={`ACTED_IN`} iri={h.via[0]} focus={focus} onFocus={setFocus} />
-                  <ProofChip kind="Movie" label={label(h.movie)} iri={h.movie} focus={focus} onFocus={setFocus} />
+                  <ProofChip kind="Movie" label={label(h.movie)} iri={h.movie} focus={focus} onFocus={setFocus} testid={`proof-chip-movie-${i}`} />
                   <ProofChip kind="rel" label={`ACTED_IN`} iri={h.via[1]} focus={focus} onFocus={setFocus} />
                   <ProofChip kind="Person" label={label(h.to)} iri={h.to} focus={focus} onFocus={setFocus} />
                   <span className="proof-rule">⇒ coStar · rung {proof.rung - i - 1 === 0 ? "0 (Kevin Bacon)" : proof.rung - i - 1}</span>
@@ -225,7 +225,7 @@ export default function BaconTab() {
               height={300}
             />
             {focus && (
-              <div className="focus-line">
+              <div className="focus-line" data-testid="focus-line">
                 Selected record <code>{focus}</code>. In Neo4j:{" "}
                 <code>
                   {focus.startsWith("5:")
@@ -275,16 +275,19 @@ function ProofChip({
   iri,
   focus,
   onFocus,
+  testid,
 }: {
   kind: "Person" | "Movie" | "rel";
   label: string;
   iri: string;
   focus: string | null;
   onFocus: (id: string | null) => void;
+  testid?: string;
 }) {
   const id = elementIdOf(iri) ?? iri;
   return (
     <button
+      data-testid={testid}
       className={`proof-chip ${kind} ${focus === id ? "on" : ""}`}
       onClick={() => onFocus(focus === id ? null : id)}
       title={`elementId ${id}`}
@@ -293,4 +296,14 @@ function ProofChip({
       <span className="proof-eid">{id.split(":").pop()}</span>
     </button>
   );
+}
+
+/** "Meg Ryan" → "meg-ryan": stable testids for the recorder. */
+function slug(name: string): string {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }

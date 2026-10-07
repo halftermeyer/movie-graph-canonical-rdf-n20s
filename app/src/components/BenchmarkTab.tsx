@@ -31,6 +31,7 @@ export default function BenchmarkTab() {
           {BENCHMARK_SCOPES.map((s) => (
             <button
               key={s.id}
+              data-testid={`bench-scope-${s.id}`}
               className={`preset ${scopeId === s.id ? "active" : ""}`}
               onClick={() => {
                 setScopeId(s.id);
@@ -43,7 +44,7 @@ export default function BenchmarkTab() {
         </div>
         <textarea className="cypher-input" value={scope} onChange={(e) => { setScope(e.target.value); setScopeId("custom"); }} rows={5} spellCheck={false} />
         <div className="button-group">
-          <FilledButton onClick={() => run.run()} isLoading={run.running}>
+          <FilledButton onClick={() => run.run()} isLoading={run.running} data-testid="bench-run">
             Run export + projection + isomorphism check
           </FilledButton>
         </div>
@@ -69,7 +70,7 @@ export default function BenchmarkTab() {
               </div>
             </div>
             <div className="scenario-summary">
-              <Stat value={r.isomorphic ? "isomorphic ✓" : "different ✗"} label={`${num(r.compared)} triples compared · ${ms(r.checkMs)}`} tone={r.isomorphic ? "good" : "bad"} />
+              <Stat value={r.isomorphic ? "isomorphic ✓" : "different ✗"} label={`${num(r.compared)} triples compared · ${ms(r.checkMs)}`} tone={r.isomorphic ? "good" : "bad"} testid="bench-result" />
             </div>
             {r.diff && (
               <pre className="blocking-error">

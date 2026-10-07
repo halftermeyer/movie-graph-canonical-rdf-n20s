@@ -22,11 +22,14 @@ export default function SnapshotTab() {
   const [selected, setSelected] = useState<SnapshotRecord | null>(null);
   const [triples, setTriples] = useState<{ p: string; o: string }[]>([]);
 
+  const [ranPreset, setRanPreset] = useState("custom");
   const run = useAction(async (s: string) => {
     setSelected(null);
     setTriples([]);
     const r = await oneSnapshotTwoConsumers(s);
     setGraph(await fetchElements(r.records.map((x) => x.elementId)));
+    // which preset produced this result: the recorder waits on it
+    setRanPreset(SCOPES.find((p) => p.cypher === s)?.id ?? "custom");
     return r;
   });
 
@@ -66,6 +69,7 @@ export default function SnapshotTab() {
           {SCOPES.map((s) => (
             <button
               key={s.id}
+              data-testid={`scope-preset-${s.id}`}
               className={`preset ${preset === s.id ? "active" : ""}`}
               onClick={() => {
                 setPreset(s.id);
@@ -88,7 +92,7 @@ export default function SnapshotTab() {
         {r && (
           <>
             {presetInfo && scope === presetInfo.cypher && <div className="scope-rule">{presetInfo.rule}</div>}
-            <div className="two-consumers">
+            <div className="two-consumers" data-testid={`scope-result-${ranPreset}`}>
               <div className="consumer">
                 <div className="consumer-title">rdfsnapshot.export → TriG</div>
                 <div className="scenario-summary">
@@ -139,7 +143,12 @@ export default function SnapshotTab() {
                   </thead>
                   <tbody>
                     {r.records.map((rec) => (
-                      <tr key={rec.iri} className={selected?.iri === rec.iri ? "selected" : ""} onClick={() => inspect(rec)}>
+                      <tr
+                        key={rec.iri}
+                        className={selected?.iri === rec.iri ? "selected" : ""}
+                        onClick={() => inspect(rec)}
+                        data-testid={rec === r.records.find((x) => x.kind === "Relationship") ? "record-first-rel" : undefined}
+                      >
                         <td>
                           <span className={`kind-chip ${rec.kind}`}>{rec.kind === "Node" ? "node" : "relationship"}</span>{" "}
                           {rec.display ||
@@ -154,7 +163,7 @@ export default function SnapshotTab() {
                   </tbody>
                 </table>
               </div>
-              <div className="record-inspector">
+              <div className="record-inspector" data-testid="record-inspector">
                 {selected ? (
                   <>
                     <div className="inspector-title">
@@ -166,7 +175,7 @@ export default function SnapshotTab() {
                         what lets a bridge say "this ACTED_IN record <em>is</em> a PerformanceRole".
                       </div>
                     )}
-                    <table className="triples-table">
+                    <table className="triples-table" data-testid={triples.length ? "record-triples" : undefined}>
                       <tbody>
                         {triples.map((t, i) => (
                           <tr key={i}>
