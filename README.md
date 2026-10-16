@@ -2,7 +2,7 @@
 
 **Scope first (Cypher), reason second (n20s).**
 
-An internal Neo4j demo for SEs and product. It uses the Movie Graph (`:play movies`):
+A public demo exploring some new ideas, shared with partners, research teams and the Neo4j developer community. It is an experimental personal project, not an official Neo4j product. It uses the Movie Graph (`:play movies`):
 - snapshotted to RDF with [rdfsnapshot](https://github.com/halftermeyer/neo4j-rdf-snapshot);
 - bridged to schema.org, or to Wikidata;
 - reasoned over in memory with [n20s](https://github.com/halftermeyer/neo4j-n20s), which is Apache Jena running inside Neo4j.

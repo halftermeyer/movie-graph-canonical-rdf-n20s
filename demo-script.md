@@ -1,6 +1,6 @@
 # Demo script: Movie Graph → canonical RDF → n20s
 
-**Audience:** Neo4j colleagues (SEs, product). **Live length:** 15 to 20 minutes. **Video:** about 6 minutes, generated from the `scene` blocks below (`make video`).
+**Audience:** partners, research teams and the Neo4j developer community. **Live length:** 15 to 20 minutes. **Video:** about 6 minutes, generated from the `scene` blocks below (`make video`).
 
 **The one sentence to leave behind:** scope first with Cypher, reason second with RDF, and every answer can be traced back to a database record.
 

@@ -1,4 +1,4 @@
-Build an internal demo for neo4j: the Movie Graph, snapshotted to RDF, bridged to schema.org, reasoned over with n20s. Audience: Neo4j colleagues (SEs, product). Message: scope with Cypher, reason with RDF.
+Build a public demo of some new ideas: the Movie Graph, snapshotted to RDF, bridged to schema.org, reasoned over with n20s. Audience: partners, research teams and the Neo4j developer community. Message: scope with Cypher, reason with RDF.
 
 The UI should look like this one: https://github.com/halftermeyer/neo4j-rdf-fin-lineage (React 19 + TypeScript + Vite, @neo4j-ndl/react, neo4j-driver singleton, typed Cypher query functions, global Cypher audit drawer grouped per action, hand-rolled SVG graph view, one-click reset, Gemini assistant tab as a tool-calling loop over the query functions). Reuse its thesis framing: "Scope first (Cypher), reason second (n20s)".
 
